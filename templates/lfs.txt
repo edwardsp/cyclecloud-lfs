@@ -40,7 +40,7 @@ UseLowPrio = false
     [[nodearray oss]]
     MachineType = $MasterMachineType
     Azure.SingleScaleset = True
-    InitialCount = 0 
+    InitialCount = $LustreOSSCount
 
         [[[configuration]]]
         lustre.blobaccount = $LustreBlobAccount

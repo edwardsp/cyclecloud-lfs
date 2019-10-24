@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # vars used in script
-mdt_device=/dev/sdb1
+mdt_device=/dev/sdb
 ost_device='/dev/nvme*n1'
 raid_device=/dev/md10
 

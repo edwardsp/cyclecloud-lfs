@@ -23,9 +23,9 @@ UseLowPrio = false
     IsReturnProxy = $ReturnProxy
     
         [[[configuration]]]
-	lustre.blobaccount = $LustreBlobAccount
-	lustre.blobkey = $LustreBlobKey
-	lustre.blobcontainer = $LustreBlobContainer
+        lustre.blobaccount = $LustreBlobAccount
+        lustre.blobkey = $LustreBlobKey
+        lustre.blobcontainer = $LustreBlobContainer
 
         [[[cluster-init lfs:default:1.0.0]]]
         Optional = True
@@ -43,9 +43,9 @@ UseLowPrio = false
     InitialCount = 0 
 
         [[[configuration]]]
-	lustre.blobaccount = $LustreBlobAccount
-	lustre.blobkey = $LustreBlobKey
-	lustre.blobcontainer = $LustreBlobContainer
+        lustre.blobaccount = $LustreBlobAccount
+        lustre.blobkey = $LustreBlobKey
+        lustre.blobcontainer = $LustreBlobContainer
 
         [[[cluster-init lfs:default:1.0.0]]]
         Optional = True
@@ -154,6 +154,15 @@ Order = 30
         Label = Lustre MountPoint
         Description = The mount point to mount the Lustre file server on.
         DefaultValue = /lustre
+        Required = True
+
+        [[[parameter LustreOSSCount]]]
+        Label = Additional OSS Nodes
+        Description = The number of additional OSS nodes to start.
+        DefaultValue = 1
+        Config.Plugin = pico.form.NumberTextBox
+        Config.MinValue = 0
+        Config.IntegerOnly = true
         Required = True
 
     [[parameters Lustre HSM]]

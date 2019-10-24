@@ -1,65 +1,35 @@
 #!/bin/bash
 
+# vars used in script
 mdt_device=/dev/sdb1
-ost_device=/dev/nvme0n1
+ost_device='/dev/nvme*n1'
+script_dir=$CYCLECLOUD_SPEC_PATH/files
+raid_device=/dev/md10
 
-cat << EOF >/etc/yum.repos.d/LustrePack.repo
-[lustreserver]
-name=lustreserver
-baseurl=https://downloads.whamcloud.com/public/lustre/latest-2.10-release/el7.6.1810/patchless-ldiskfs-server/
-enabled=1
-gpgcheck=0
-
-[e2fs]
-name=e2fs
-baseurl=https://downloads.whamcloud.com/public/e2fsprogs/latest/el7/
-enabled=1
-gpgcheck=0
-
-[lustreclient]
-name=lustreclient
-baseurl=https://downloads.whamcloud.com/public/lustre/latest-2.10-release/el7.6.1810/client/
-enabled=1
-gpgcheck=0
-EOF
-
-yum -y install lustre kmod-lustre-osd-ldiskfs lustre-osd-ldiskfs-mount lustre-resource-agents e2fsprogs lustre-tests
-
-sed -i 's/ResourceDisk\.Format=y/ResourceDisk.Format=n/g' /etc/waagent.conf
-
-systemctl restart waagent
-
-weak-modules --add-kernel --no-initramfs
-
-umount /mnt/resource
-
+# set up cycle vars
 yum -y install jq
-
 cluster_name=$(jetpack config cyclecloud.cluster.name)
-
 ccuser=$(jetpack config cyclecloud.config.username)
 ccpass=$(jetpack config cyclecloud.config.password)
 ccurl=$(jetpack config cyclecloud.config.web_server)
 cctype=$(jetpack config cyclecloud.node.template)
 
+storage_account=$(jetpack config lustre.blobaccount)
+storage_key="$(jetpack config lustre.blobkey)"
+storage_container=$(jetpack config lustre.blobcontainer)
+
+# RAID OST DEVICES
+$script_dir/create_raid0.sh $raid_device $ost_device
+
+# INSTALL LUSTRE PACKAGES
+$script_dir/lfspkgs.sh
+
 ost_index=1
 
 if [ "$cctype" = "mds" ]; then
 
-	echo "setting up the mds"
-
-	mkfs.lustre --fsname=LustreFS --mgs --mdt --backfstype=ldiskfs --reformat $mdt_device --index 0
-	mkdir /mnt/mgsmds
-	echo "$mdt_device /mnt/mgsmds lustre noatime,nodiratime,nobarrier 0 2" >> /etc/fstab
-	mount -a
-
-	# set up hsm
-	lctl set_param -P mdt.*-MDT0000.hsm_control=enabled
-	lctl set_param -P mdt.*-MDT0000.hsm.default_archive_id=1
-	lctl set_param mdt.*-MDT0000.hsm.max_requests=128
-
-	# allow any user and group ids to write
-	lctl set_param mdt.*-MDT0000.identity_upcall=NONE
+	# SETUP MDS
+	$script_dir/lfsmaster.sh $mdt_device
 
 else
 
@@ -81,17 +51,15 @@ echo "ost_index=$ost_index"
 
 mds_ip=$(curl -s -k --user $ccuser:$ccpass "$ccurl/clusters/$cluster_name/nodes" | jq -r '.nodes[] | select(.Template=="mds") | .IpAddress')
 
-mkfs.lustre \
-    --fsname=LustreFS \
-    --backfstype=ldiskfs \
-    --reformat \
-    --ost \
-    --mgsnode=$mds_ip \
-    --index=$ost_index \
-    $ost_device
+PSSH_NODENUM=$ost_index $script_dir/lfsoss.sh $mds_ip $raid_device
 
-mkdir /mnt/oss
-echo "$ost_device /mnt/oss lustre noatime,nodiratime,nobarrier 0 2" >> /etc/fstab
-mount -a
+$script_dir/lfshsm.sh $mds_ip $storage_account "$storage_key" $storage_container
 
+if [ "$cctype" = "mds" ]; then
+
+	# IMPORT CONTAINER
+	$script_dir/lfsclient.sh $mds_ip
+	$script_dir/lfsimport.sh $storage_account "$storage_key" $storage_container
+
+fi
 

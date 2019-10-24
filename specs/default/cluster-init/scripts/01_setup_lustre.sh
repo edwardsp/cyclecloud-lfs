@@ -23,6 +23,9 @@ chmod +x $script_dir/*.sh
 # RAID OST DEVICES
 $script_dir/create_raid0.sh $raid_device $ost_device
 
+# SETUP LUSTRE YUM REPO
+$script_dir/lfsrepo.sh
+
 # INSTALL LUSTRE PACKAGES
 $script_dir/lfspkgs.sh
 

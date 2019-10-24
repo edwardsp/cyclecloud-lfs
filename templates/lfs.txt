@@ -79,13 +79,13 @@ Order = 10
         Label = MDS VM Type
         Description = The VM type for the MDS/MGS and OSS nodes of Lustre.
         ParameterType = Cloud.MachineType
-        DefaultValue = Standard_L8s_v2
+        DefaultValue = Standard_L16s_v2
 
         [[[parameter ExecuteMachineType]]]
         Label = Client VM Type
         Description = The VM type for client nodes
         ParameterType = Cloud.MachineType
-        DefaultValue = Standard_L8s_v2
+        DefaultValue = Standard_L16s_v2
         Config.Multiselect = true
 
     [[parameters Networking]]

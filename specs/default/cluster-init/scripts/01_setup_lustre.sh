@@ -31,7 +31,7 @@ ost_index=1
 if [ "$cctype" = "mds" ]; then
 
 	# SETUP MDS
-	$script_dir/lfsmaster.sh $mdt_device
+	PSSH_NODENUM=0 $script_dir/lfsmaster.sh $mdt_device
 
 else
 

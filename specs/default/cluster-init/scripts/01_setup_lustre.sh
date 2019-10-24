@@ -3,7 +3,6 @@
 # vars used in script
 mdt_device=/dev/sdb1
 ost_device='/dev/nvme*n1'
-script_dir=$CYCLECLOUD_SPEC_PATH/files
 raid_device=/dev/md10
 
 # set up cycle vars
@@ -17,6 +16,9 @@ cctype=$(jetpack config cyclecloud.node.template)
 storage_account=$(jetpack config lustre.blobaccount)
 storage_key="$(jetpack config lustre.blobkey)"
 storage_container=$(jetpack config lustre.blobcontainer)
+
+script_dir=$CYCLECLOUD_SPEC_PATH/files
+chmod +x $script_dir/*.sh
 
 # RAID OST DEVICES
 $script_dir/create_raid0.sh $raid_device $ost_device

@@ -2,8 +2,7 @@
 
 # vars used in script
 mdt_device=/dev/sdb
-ost_device='/dev/nvme*n1'
-raid_device=/dev/md10
+ost_device_list='/dev/nvme*n1'
 
 # set up cycle vars
 yum -y install jq
@@ -20,8 +19,14 @@ storage_container=$(jetpack config lustre.blobcontainer)
 script_dir=$CYCLECLOUD_SPEC_PATH/files
 chmod +x $script_dir/*.sh
 
-# RAID OST DEVICES
-$script_dir/create_raid0.sh $raid_device $ost_device
+n_ost_devices=$(echo $ost_device_list | wc -w)
+if [ "$n_ost_devices" -gt "1" ]; then
+	ost_device=/dev/md10
+	# RAID OST DEVICES
+	$script_dir/create_raid0.sh $ost_device $ost_device_list
+else
+	ost_device=$ost_device_list
+fi
 
 # SETUP LUSTRE YUM REPO
 $script_dir/lfsrepo.sh
@@ -56,7 +61,7 @@ echo "ost_index=$ost_index"
 
 mds_ip=$(curl -s -k --user $ccuser:$ccpass "$ccurl/clusters/$cluster_name/nodes" | jq -r '.nodes[] | select(.Template=="mds") | .IpAddress')
 
-PSSH_NODENUM=$ost_index $script_dir/lfsoss.sh $mds_ip $raid_device
+PSSH_NODENUM=$ost_index $script_dir/lfsoss.sh $mds_ip $ost_device
 
 $script_dir/lfshsm.sh $mds_ip $storage_account "$storage_key" $storage_container
 

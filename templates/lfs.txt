@@ -27,7 +27,7 @@ UseLowPrio = false
         lustre.blobkey = $LustreBlobKey
         lustre.blobcontainer = $LustreBlobContainer
 
-        [[[cluster-init lfs:default:1.0.0]]]
+        [[[cluster-init lfs:default]]]
         Optional = True
 
         [[[network-interface eth0]]]
@@ -47,7 +47,7 @@ UseLowPrio = false
         lustre.blobkey = $LustreBlobKey
         lustre.blobcontainer = $LustreBlobContainer
 
-        [[[cluster-init lfs:default:1.0.0]]]
+        [[[cluster-init lfs:default]]]
         Optional = True
 
 [parameters About]
@@ -167,7 +167,7 @@ Order = 30
 
     [[parameters Lustre HSM]]
     Order = 20
-    Description = "Through the HSM node, Lustre can archive data into, and import data from Azure storage blobs."
+    Description = "Lustre can use BLOB storage through HSM to import or archive data."
 
         [[[parameter LustreBlobAccount]]]
         Label = Blob Account

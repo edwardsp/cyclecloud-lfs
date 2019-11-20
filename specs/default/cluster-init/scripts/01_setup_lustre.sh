@@ -12,7 +12,7 @@ ccpass=$(jetpack config cyclecloud.config.password)
 ccurl=$(jetpack config cyclecloud.config.web_server)
 cctype=$(jetpack config cyclecloud.node.template)
 
-lustre_version=$(jetpack config lustre.client.version)
+lustre_version=$(jetpack config lustre.version)
 
 use_hsm=$(jetpack config lustre.use_hsm)
 storage_account=$(jetpack config lustre.storage_account)

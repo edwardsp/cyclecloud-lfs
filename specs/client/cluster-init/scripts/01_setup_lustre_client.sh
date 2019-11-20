@@ -7,9 +7,9 @@ ccuser=$(jetpack config cyclecloud.config.username)
 ccpass=$(jetpack config cyclecloud.config.password)
 ccurl=$(jetpack config cyclecloud.config.web_server)
 
-lustre_name=$(jetpack config lustre.client.cluster_name)
-lustre_version=$(jetpack config lustre.client.version)
-mount_point=$(jetpack config lustre.client.mount_point)
+lustre_name=$(jetpack config lustre.cluster_name)
+lustre_version=$(jetpack config lustre.version)
+mount_point=$(jetpack config lustre.mount_point)
 
 mds_ip=$(curl -s -k --user $ccuser:$ccpass "$ccurl/clusters/$lustre_name/nodes"| jq -r '.nodes[] | select(.Template=="mds") | .IpAddress')
 

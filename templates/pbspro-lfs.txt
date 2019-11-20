@@ -18,9 +18,9 @@ Autoscale = $Autoscale
     KeyPairLocation = ~/.ssh/cyclecloud.pem
     
         [[[configuration]]]
-        lustre.client.cluster_name = $LustreClusterName
-        lustre.client.version = $LustreVersion
-        lustre.client.mount_point = $LustreMountPoint
+        lustre.cluster_name = $LustreClusterName
+        lustre.version = $LustreVersion
+        lustre.mount_point = $LustreMountPoint
 
 
         [[[cluster-init cyclecloud/pbspro:default]]]
@@ -33,8 +33,9 @@ Autoscale = $Autoscale
     AdditionalClusterInitSpecs = $MasterClusterInitSpecs
     
         [[[configuration]]]
-        lustre.client.cluster_name = $LustreClusterName
-        lustre.client.mount_point = $LustreMountPoint
+        lustre.cluster_name = $LustreClusterName
+        lustre.version = $LustreVersion
+        lustre.mount_point = $LustreMountPoint
 
         [[[cluster-init cyclecloud/pbspro:master]]]
         [[[cluster-init lfs:client]]]
@@ -54,10 +55,10 @@ Autoscale = $Autoscale
     Interruptible = $UseLowPrio
     AdditionalClusterInitSpecs = $ExecuteClusterInitSpecs
 
-
         [[[configuration]]]
-        lustre.client.cluster_name = $LustreClusterName
-        lustre.client.mount_point = $LustreMountPoint
+        lustre.cluster_name = $LustreClusterName
+        lustre.version = $LustreVersion
+        lustre.mount_point = $LustreMountPoint
 
         [[[cluster-init cyclecloud/pbspro:execute]]]
         [[[cluster-init lfs:client]]]

@@ -167,14 +167,15 @@ Order = 20
         [[[parameter LustreVersion]]]
         Label = Lustre Version
         Description = The Lustre version to use
-        DefaultValue = 2.10
+        DefaultValue = "2.10"
+        FreeForm = false
         Config.Plugin = pico.control.AutoCompleteDropdown
             [[[[list Config.Entries]]]]
-            Name = 2.10
-            Label = 2.10
+            Name = "2.10"
+            Label = "2.10"
             [[[[list Config.Entries]]]]
-            Name = 2.12
-            Label = 2.12
+            Name = "2.12"
+            Label = "2.12"
         
         [[[parameter LustreMountPoint]]]
         Label = Lustre Mount Point

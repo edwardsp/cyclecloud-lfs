@@ -12,9 +12,17 @@ ccpass=$(jetpack config cyclecloud.config.password)
 ccurl=$(jetpack config cyclecloud.config.web_server)
 cctype=$(jetpack config cyclecloud.node.template)
 
-storage_account=$(jetpack config lustre.blobaccount)
-storage_key="$(jetpack config lustre.blobkey)"
-storage_container=$(jetpack config lustre.blobcontainer)
+lustre_version=$(jetpack config lustre.client.version)
+
+use_hsm=$(jetpack config lustre.use_hsm)
+storage_account=$(jetpack config lustre.storage_account)
+storage_key="$(jetpack config lustre.storage_key)"
+storage_container=$(jetpack config lustre.storage_container)
+
+use_log_analytics=$(jetpack config lustre.use_log_analytics)
+log_analytics_name=$(jetpack config lustre.log_analytics.name)
+log_analytics_workspace_id="$(jetpack config lustre.log_analytics.workspace_id)"
+log_analytics_key=$(jetpack config lustre.log_analytics.key)
 
 script_dir=$CYCLECLOUD_SPEC_PATH/files
 chmod +x $script_dir/*.sh
@@ -29,7 +37,7 @@ else
 fi
 
 # SETUP LUSTRE YUM REPO
-$script_dir/lfsrepo.sh
+$script_dir/lfsrepo.sh $lustre_version
 
 # INSTALL LUSTRE PACKAGES
 $script_dir/lfspkgs.sh
@@ -63,13 +71,22 @@ mds_ip=$(curl -s -k --user $ccuser:$ccpass "$ccurl/clusters/$cluster_name/nodes"
 
 PSSH_NODENUM=$ost_index $script_dir/lfsoss.sh $mds_ip $ost_device
 
-$script_dir/lfshsm.sh $mds_ip $storage_account "$storage_key" $storage_container
+if [ "${use_hsm,,}" = "true" ]; then
 
-if [ "$cctype" = "mds" ]; then
+	$script_dir/lfshsm.sh $mds_ip $storage_account "$storage_key" $storage_container $lustre_version
 
-	# IMPORT CONTAINER
-	$script_dir/lfsclient.sh $mds_ip
-	$script_dir/lfsimport.sh $storage_account "$storage_key" $storage_container
+	if [ "$cctype" = "mds" ]; then
+
+		# IMPORT CONTAINER
+		$script_dir/lfsclient.sh $mds_ip /lustre
+		$script_dir/lfsimport.sh $storage_account "$storage_key" $storage_container /lustre $lustre_version
+
+	fi
 
 fi
 
+if [ "${use_log_analytics,,}" = "true" ]; then
+
+	$script_dir/lfsloganalytics.sh $log_analytics_name $log_analytics_workspace_id "$log_analytics_key"
+
+fi

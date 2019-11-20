@@ -19,7 +19,9 @@ Autoscale = $Autoscale
     
         [[[configuration]]]
         lustre.client.cluster_name = $LustreClusterName
+        lustre.client.version = $LustreVersion
         lustre.client.mount_point = $LustreMountPoint
+
 
         [[[cluster-init cyclecloud/pbspro:default]]]
         [[[cluster-init lfs:client]]]
@@ -161,8 +163,20 @@ Order = 20
         Config.Query = select ClusterName as Name from Cloud.Node where Cluster().IsTemplate =!= True && ClusterInitSpecs["lfs:default"] isnt undefined
         Config.SetDefault = false
 
+        [[[parameter LustreVersion]]]
+        Label = Lustre Version
+        Description = The Lustre version to use
+        DefaultValue = 2.10
+        Config.Plugin = pico.control.AutoCompleteDropdown
+        [[[list Config.Entries]]]
+            Name = 2.10
+            Label = 2.10
+        [[[list Config.Entries]]]
+            Name = 2.12
+            Label = 2.12
+        
         [[[parameter LustreMountPoint]]]
-        Label = Lustre MountPoint
+        Label = Lustre Mount Point
         Description = The mount point to mount the Lustre file server on.
         DefaultValue = /lustre
         Required = True

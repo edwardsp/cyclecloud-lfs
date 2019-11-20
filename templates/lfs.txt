@@ -23,9 +23,17 @@ UseLowPrio = false
     IsReturnProxy = $ReturnProxy
     
         [[[configuration]]]
-        lustre.blobaccount = $LustreBlobAccount
-        lustre.blobkey = $LustreBlobKey
-        lustre.blobcontainer = $LustreBlobContainer
+        lustre.version = $LustreVersion
+
+        lustre.use_hsm = $LustreUseHsm
+        lustre.storage_account = $LustreBlobAccount
+        lustre.storage_key = $LustreBlobKey
+        lustre.storage_container = $LustreBlobContainer
+
+        lustre.use_log_analytics = $LustreUseLogAnalytics
+        lustre.log_analytics.name = $LogAnalyticsName
+        lustre.log_analytics.workspace_id = $LogAnalyticsWorkspaceId
+        lustre.log_analytics.key = $LogAnalyticsKey
 
         [[[cluster-init lfs:default]]]
         Optional = True
@@ -43,9 +51,18 @@ UseLowPrio = false
     InitialCount = $LustreOSSCount
 
         [[[configuration]]]
-        lustre.blobaccount = $LustreBlobAccount
-        lustre.blobkey = $LustreBlobKey
-        lustre.blobcontainer = $LustreBlobContainer
+        lustre.version = $LustreVersion
+        
+        lustre.use_hsm = $LustreUseHsm
+        lustre.storage_account = $LustreBlobAccount
+        lustre.storage_key = $LustreBlobKey
+        lustre.storage_container = $LustreBlobContainer
+
+        lustre.use_log_analytics = $LustreUseLogAnalytics
+        lustre.log_analytics.name = $LogAnalyticsName
+        lustre.log_analytics.workspace_id = $LogAnalyticsWorkspaceId
+        lustre.log_analytics.key = $LogAnalyticsKey
+
 
         [[[cluster-init lfs:default]]]
         Optional = True
@@ -146,16 +163,22 @@ Order = 20
 [parameters Lustre Settings]
 Order = 30
 
-    [[parameters Lustre Client Settings]]
+    [[parameters General Settings]]
     Order = 10
     Description = "Use a Lustre cluster as a NAS. Settings for defining the Lustre cluster"
 
-        [[[parameter LustreMountPoint]]]
-        Label = Lustre MountPoint
-        Description = The mount point to mount the Lustre file server on.
-        DefaultValue = /lustre
-        Required = True
-
+        [[[parameter LustreVersion]]]
+        Label = Lustre Version
+        Description = The Lustre version to use
+        DefaultValue = 2.10
+        Config.Plugin = pico.control.AutoCompleteDropdown
+        [[[list Config.Entries]]]
+            Name = 2.10
+            Label = 2.10
+        [[[list Config.Entries]]]
+            Name = 2.12
+            Label = 2.12       
+        
         [[[parameter LustreOSSCount]]]
         Label = Additional OSS Nodes
         Description = The number of additional OSS nodes to start.
@@ -165,25 +188,58 @@ Order = 30
         Config.IntegerOnly = true
         Required = True
 
-    [[parameters Lustre HSM]]
+    [[parameters HSM Settings]]
     Order = 20
     Description = "Lustre can use BLOB storage through HSM to import or archive data."
 
+        [[[parameter LustreUseHsm]]]
+        Label = Enable HSM
+        DefaultValue = false
+        Widget.Plugin = pico.form.BooleanCheckBox
+        Widget.Label = Enable HSM (requires storage details below)
+
         [[[parameter LustreBlobAccount]]]
-        Label = Blob Account
+        Label = Storage Account
         Description = The blob account to which Lustre will sync.
         DefaultValue = <blob account name> 
         Required = True
 
         [[[parameter LustreBlobKey]]]
-        Label = Blob Key
+        Label = Storage Key
         Description = The blob account key.
         DefaultValue = <blob account key>
         Required = True
         
 	[[[parameter LustreBlobContainer]]]
-        Label = Blob Container
+        Label = Storage Container
         Description = The blob container.
         DefaultValue = <blob container>
         Required = True
 
+    [[parameters Log Analytics Settings]]
+    Order = 30
+    Description = "Store node metrics to Log Analytics."
+
+        [[[parameter LustreUseLogAnalytics]]]
+        Label = Enable Log Analytics
+        DefaultValue = false
+        Widget.Plugin = pico.form.BooleanCheckBox
+        Widget.Label = Enable Log Analytics (requires log analytics details below)
+
+        [[[parameter LogAnalyticsName]]]
+        Label = Name
+        Description = The log name.
+        DefaultValue = <name>
+        Required = True
+
+        [[[parameter LogAnalyticsWorkspaceId]]]
+        Label = Log Analytics Workspace Id
+        Description = The workspace Id to store the log.
+        DefaultValue = <workspace id>
+        Required = True
+        
+	[[[parameter LogAnalyticsKey]]]
+        Label = Log Analytics Key
+        Description = The log analytics key.
+        DefaultValue = <key>
+        Required = True

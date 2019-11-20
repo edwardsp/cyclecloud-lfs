@@ -168,7 +168,7 @@ Order = 20
         Label = Lustre Version
         Description = The Lustre version to use
         DefaultValue = "2.10"
-        FreeForm = false
+        Config.FreeForm = false
         Config.Plugin = pico.control.AutoCompleteDropdown
             [[[[list Config.Entries]]]]
             Name = "2.10"

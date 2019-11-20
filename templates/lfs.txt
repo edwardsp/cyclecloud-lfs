@@ -173,11 +173,11 @@ Order = 30
         DefaultValue = 2.10
         Config.Plugin = pico.control.AutoCompleteDropdown
             [[[[list Config.Entries]]]]
-                Name = 2.10
-                Label = 2.10
+            Name = 2.10
+            Label = 2.10
             [[[[list Config.Entries]]]]
-                Name = 2.12
-                Label = 2.12       
+            Name = 2.12
+            Label = 2.12       
         
         [[[parameter LustreOSSCount]]]
         Label = Additional OSS Nodes

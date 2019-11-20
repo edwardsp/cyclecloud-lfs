@@ -168,10 +168,10 @@ Order = 20
         Description = The Lustre version to use
         DefaultValue = 2.10
         Config.Plugin = pico.control.AutoCompleteDropdown
-        [[[list Config.Entries]]]
+            [[[[list Config.Entries]]]]
             Name = 2.10
             Label = 2.10
-        [[[list Config.Entries]]]
+            [[[[list Config.Entries]]]]
             Name = 2.12
             Label = 2.12
         

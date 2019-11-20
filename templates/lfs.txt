@@ -172,12 +172,12 @@ Order = 30
         Description = The Lustre version to use
         DefaultValue = 2.10
         Config.Plugin = pico.control.AutoCompleteDropdown
-        [[[list Config.Entries]]]
-            Name = 2.10
-            Label = 2.10
-        [[[list Config.Entries]]]
-            Name = 2.12
-            Label = 2.12       
+            [[[[list Config.Entries]]]]
+                Name = 2.10
+                Label = 2.10
+            [[[[list Config.Entries]]]]
+                Name = 2.12
+                Label = 2.12       
         
         [[[parameter LustreOSSCount]]]
         Label = Additional OSS Nodes
@@ -196,7 +196,7 @@ Order = 30
         Label = Enable HSM
         DefaultValue = false
         Widget.Plugin = pico.form.BooleanCheckBox
-        Widget.Label = Enable HSM (requires storage details below)
+        Widget.Label = (requires storage details below)
 
         [[[parameter LustreBlobAccount]]]
         Label = Storage Account
@@ -224,7 +224,7 @@ Order = 30
         Label = Enable Log Analytics
         DefaultValue = false
         Widget.Plugin = pico.form.BooleanCheckBox
-        Widget.Label = Enable Log Analytics (requires log analytics details below)
+        Widget.Label = (requires log analytics details below)
 
         [[[parameter LogAnalyticsName]]]
         Label = Name

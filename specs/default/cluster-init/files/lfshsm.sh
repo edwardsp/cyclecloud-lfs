@@ -12,7 +12,6 @@ storage_container=$4
 lustre_version=${5-2.10}
 
 # adding kernel module for lustre client
-
 if [ "$lustre_version" = "2.10" ]; then
     yum install -y kmod-lustre-client
     weak-modules --add-kernel $(uname -r)

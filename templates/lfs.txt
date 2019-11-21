@@ -203,19 +203,19 @@ Order = 30
         Label = Storage Account
         Description = The blob account to which Lustre will sync.
         DefaultValue = <blob account name> 
-        Required = True
+        Conditions.Disabled := LustreUseHsm is false
 
         [[[parameter LustreBlobKey]]]
         Label = Storage Key
         Description = The blob account key.
         DefaultValue = <blob account key>
-        Required = True
-        
+        Conditions.Disabled := LustreUseHsm is false
+
 	[[[parameter LustreBlobContainer]]]
         Label = Storage Container
         Description = The blob container.
         DefaultValue = <blob container>
-        Required = True
+        Conditions.Disabled := LustreUseHsm is false
 
     [[parameters Log Analytics Settings]]
     Order = 30
@@ -231,16 +231,16 @@ Order = 30
         Label = Name
         Description = The log name.
         DefaultValue = <name>
-        Required = True
+        Conditions.Disabled := LustreUseLogAnalytics is false
 
         [[[parameter LogAnalyticsWorkspaceId]]]
         Label = Log Analytics Workspace Id
         Description = The workspace Id to store the log.
         DefaultValue = <workspace id>
-        Required = True
-        
+        Conditions.Disabled := LustreUseLogAnalytics is false
+
 	[[[parameter LogAnalyticsKey]]]
         Label = Log Analytics Key
         Description = The log analytics key.
         DefaultValue = <key>
-        Required = True
+        Conditions.Disabled := LustreUseLogAnalytics is false

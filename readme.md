@@ -2,9 +2,9 @@
 
 Lustre is a High Performance Parallel Filesystem typically used for High Performance Computing.  This repository contains an Azure CycleCloud project and templates to create a lustre file system on Azure.
 
-The Lustre filesystem that is created is designed for scratch data and uses [Lsv2](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sizes-storage#lsv2-series) virtual machines that have local NVME disks.
+This Lustre filesystem project is designed for scratch data and uses [Lsv2](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sizes-storage#lsv2-series) virtual machines that have local NVME disks.  All the NVME disks in the virtual machine will be combined in a RAID 0 and used as the OST.  The MDS virtual machine is also used as an OSS where the local SSD is used for the MDT.  Please consider the [network throughput](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/sizes-storage#lsv2-series) when choosing the VM type as the bottleneck for this setup is the network.  For this reason it is not advisable to go any larger than the L32s_v2 for the MDS/OSS.
 
-The project contains an option to use [HSM](https://github.com/edwardsp/lemur) where data can be imported and archived to [Azure BLOB storage](https://azure.microsoft.com/en-gb/services/storage/blobs/).  All nodes run the HSM daemon when enabled.
+The project has an option to use [HSM](https://github.com/edwardsp/lemur) where data can be imported and archived to [Azure BLOB storage](https://azure.microsoft.com/en-gb/services/storage/blobs/).  All nodes run the HSM daemon when enabled.
 
 Monitoring can be enabled where the following metrics will be written to [Log Analytics](https://docs.microsoft.com/en-us/azure/azure-monitor/log-query/get-started-portal#meet-log-analytics):
 

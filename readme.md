@@ -1,13 +1,21 @@
 # Azure CycleCloud Lustre
 
-Create a lustre file system on Azure using Azure CycleCloud and cluster-init scripts.
+Lustre is a High Performance Parallel Filesystem typically used for High Performance Computing.  This repository contains an Azure CycleCloud project and templates to create a lustre file system on Azure.
 
-* Set up specifically for the Lv2 VM type on Azure (2TB NVME per 8 cores)
-* All nodes perform OSS and HSM - including the MDS
-* All NVME disks are automatically RAIDed and used as the OST
-* The internal SSD is used for the MDT
+The Lustre filesystem that is created is designed for scratch data and uses [Lsv2](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sizes-storage#lsv2-series) virtual machines that have local NVME disks.
 
-> Note: The Lustre configuration scripts are from [here](https://github.com/Azure/azurehpc/tree/master/scripts) and the Azure CycleCloud template configuration from [here](https://github.com/hmeiland/cyclecloud-lustre).
+The project contains an option to use [HSM](https://github.com/edwardsp/lemur) where data can be imported and archived to [Azure BLOB storage](https://azure.microsoft.com/en-gb/services/storage/blobs/).  All nodes run the HSM daemon when enabled.
+
+Monitoring can be enabled where the following metrics will be written to [Log Analytics](https://docs.microsoft.com/en-us/azure/azure-monitor/log-query/get-started-portal#meet-log-analytics):
+
+* Load Average
+* Kilobytes Free
+* Network Bytes Sent
+* Network Bytes Received
+
+The Lustre versions that are currently supported are `2.10` and `2.12`.  Make sure that the filesystem and clients all use the same version.  The [Whamcloud](https://downloads.whamcloud.com/public/lustre/) repository is used for RPMs and so you must use version `2.10` for CentOS 7.6 and `2.12` for CentOS 7.7.
+
+> Note: The Lustre configuration scripts are from [here](https://github.com/Azure/azurehpc/tree/master/scripts).  If the [AzureHPC](https://github.com/Azure/azurehpc) is checked out an installed there is a script, `update_lustre_scripts.sh`, that will update the cycle template with the latest versions.
 
 # Installation
 
@@ -36,13 +44,14 @@ The node types only need the following additions:
 
 ```
 [[[configuration]]]
-lustre.client.cluster_name = $LustreClusterName
-lustre.client.mount_point = $LustreMountPoint
+lustre.cluster_name = $LustreClusterName
+lustre.version = $LustreVersion
+lustre.mount_point = $LustreMountPoint
 
 [[[cluster-init lfs:client]]]
 ```
 
-The two variables, `LustreClusterName` and `LustreMountPoint` can be parameterized with the following option settings:
+These variables (`LustreClusterName`, `LustreVersion` and `LustreMountPoint`) can be parameterized with the following option settings:
 
 ```
 [[parameters Lustre Settings]]        
@@ -57,8 +66,21 @@ Description = "Use a Lustre cluster as a NAS. Settings for defining the Lustre c
     Config.Query = select ClusterName as Name from Cloud.Node where Cluster().IsTemplate =!= True && ClusterInitSpecs["lfs:default"] isnt undefined
     Config.SetDefault = false
 
+    [[[parameter LustreVersion]]]
+    Label = Lustre Version
+    Description = The Lustre version to use
+    DefaultValue = "2.10"
+    Config.FreeForm = false
+    Config.Plugin = pico.control.AutoCompleteDropdown
+        [[[[list Config.Entries]]]]
+        Name = "2.10"
+        Label = "2.10"
+        [[[[list Config.Entries]]]]
+        Name = "2.12"
+        Label = "2.12"
+    
     [[[parameter LustreMountPoint]]]
-    Label = Lustre MountPoint
+    Label = Lustre Mount Point
     Description = The mount point to mount the Lustre file server on.
     DefaultValue = /lustre
     Required = True

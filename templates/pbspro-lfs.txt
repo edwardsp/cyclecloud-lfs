@@ -152,38 +152,6 @@ Order = 20
     Description = "Section for configuring PBSPro"
     Order = 5
 
-    [[parameters Lustre Settings]]        
-    Order = 25
-    Description = "Use a Lustre cluster as a NAS. Settings for defining the Lustre cluster"
-
-        [[[parameter LustreClusterName]]]
-        Label = Lustre Cluster
-        Description = Name of the Lustre cluster to connect to. This cluster should be orchestrated by the same CycleCloud Server
-        Required = True
-        Config.Plugin = pico.form.QueryDropdown
-        Config.Query = select ClusterName as Name from Cloud.Node where Cluster().IsTemplate =!= True && ClusterInitSpecs["lfs:default"] isnt undefined
-        Config.SetDefault = false
-
-        [[[parameter LustreVersion]]]
-        Label = Lustre Version
-        Description = The Lustre version to use
-        DefaultValue = "2.10"
-        Config.FreeForm = false
-        Config.Plugin = pico.control.AutoCompleteDropdown
-            [[[[list Config.Entries]]]]
-            Name = "2.10"
-            Label = "2.10"
-            [[[[list Config.Entries]]]]
-            Name = "2.12"
-            Label = "2.12"
-        
-        [[[parameter LustreMountPoint]]]
-        Label = Lustre Mount Point
-        Description = The mount point to mount the Lustre file server on.
-        DefaultValue = /lustre
-        Required = True
-
-
     [[parameters Software]]
     Description = "Specify the scheduling software, and base OS installed on all nodes, and optionally the cluster-init and chef versions from your Locker."
     Order = 10
@@ -229,3 +197,34 @@ Order = 20
         ParameterType = Boolean
         Config.Label = Access execute nodes from the Internet
         Conditions.Excluded := UsePublicNetwork isnt true
+
+[parameters Lustre Settings]
+Order = 25
+Description = "Use a Lustre cluster as a NAS. Settings for defining the Lustre cluster"
+
+    [[parameter LustreClusterName]]
+    Label = Lustre Cluster
+    Description = Name of the Lustre cluster to connect to. This cluster should be orchestrated by the same CycleCloud Server
+    Required = True
+    Config.Plugin = pico.form.QueryDropdown
+    Config.Query = select ClusterName as Name from Cloud.Node where Cluster().IsTemplate =!= True && ClusterInitSpecs["lfs:default"] isnt undefined
+    Config.SetDefault = false
+
+    [[parameter LustreVersion]]
+    Label = Lustre Version
+    Description = The Lustre version to use
+    DefaultValue = "2.10"
+    Config.FreeForm = false
+    Config.Plugin = pico.control.AutoCompleteDropdown
+        [[[list Config.Entries]]]
+        Name = "2.10"
+        Label = "2.10"
+        [[[list Config.Entries]]]
+        Name = "2.12"
+        Label = "2.12"
+    
+    [[parameter LustreMountPoint]]
+    Label = Lustre Mount Point
+    Description = The mount point to mount the Lustre file server on.
+    DefaultValue = /lustre
+    Required = True

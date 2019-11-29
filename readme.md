@@ -51,14 +51,14 @@ lustre.mount_point = $LustreMountPoint
 [[[cluster-init lfs:client]]]
 ```
 
-These variables (`LustreClusterName`, `LustreVersion` and `LustreMountPoint`) can be parameterized with the following option settings:
+These variables (`LustreClusterName`, `LustreVersion` and `LustreMountPoint`) can be parameterized and given an additional `Lustre Setttings` configuration section by appending the following to the template:
 
 ```
-[[parameters Lustre Settings]]        
+[parameters Lustre Settings]
 Order = 25
 Description = "Use a Lustre cluster as a NAS. Settings for defining the Lustre cluster"
 
-    [[[parameter LustreClusterName]]]
+    [[parameter LustreClusterName]]
     Label = Lustre Cluster
     Description = Name of the Lustre cluster to connect to. This cluster should be orchestrated by the same CycleCloud Server
     Required = True
@@ -66,20 +66,20 @@ Description = "Use a Lustre cluster as a NAS. Settings for defining the Lustre c
     Config.Query = select ClusterName as Name from Cloud.Node where Cluster().IsTemplate =!= True && ClusterInitSpecs["lfs:default"] isnt undefined
     Config.SetDefault = false
 
-    [[[parameter LustreVersion]]]
+    [[parameter LustreVersion]]
     Label = Lustre Version
     Description = The Lustre version to use
     DefaultValue = "2.10"
     Config.FreeForm = false
     Config.Plugin = pico.control.AutoCompleteDropdown
-        [[[[list Config.Entries]]]]
+        [[[list Config.Entries]]]
         Name = "2.10"
         Label = "2.10"
-        [[[[list Config.Entries]]]]
+        [[[list Config.Entries]]]
         Name = "2.12"
         Label = "2.12"
     
-    [[[parameter LustreMountPoint]]]
+    [[parameter LustreMountPoint]]
     Label = Lustre Mount Point
     Description = The mount point to mount the Lustre file server on.
     DefaultValue = /lustre
